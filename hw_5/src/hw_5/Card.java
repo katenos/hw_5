@@ -5,11 +5,13 @@
  */
 package hw_5;
 
+import java.io.Serializable;
+
 /**
  *
  * @author kate_
  */
-public class Card {
+public class Card implements Serializable{
 
     private int number;
     private int cash;

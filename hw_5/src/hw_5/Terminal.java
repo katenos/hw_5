@@ -5,6 +5,7 @@
  */
 package hw_5;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author kate_
  */
-public class Terminal implements TerminalInterface {
+public class Terminal implements TerminalInterface,Serializable  {
 
     private ArrayList<Client> clients = new ArrayList();
     private ArrayList<Card> cards = new ArrayList();

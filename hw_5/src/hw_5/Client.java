@@ -5,13 +5,14 @@
  */
 package hw_5;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author kate_
  */
-public class Client {
+public class Client implements Serializable{
 
     private String FIO;
     private ArrayList<Card> cards = new ArrayList();

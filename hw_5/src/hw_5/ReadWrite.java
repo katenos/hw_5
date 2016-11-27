@@ -15,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
@@ -32,6 +34,21 @@ public class ReadWrite {
     private StringWriter outputSymbol;
     private StringReader inputSymbol;
 
+    public void serialData(Terminal ts) throws FileNotFoundException, IOException {
+        FileOutputStream fos = new FileOutputStream("temp.txt");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(ts);
+        oos.flush();
+        oos.close();
+    }
+
+    public Terminal getSerialData() throws FileNotFoundException, IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream("temp.txt");
+        ObjectInputStream oin = new ObjectInputStream(fis);
+        Terminal ts = (Terminal) oin.readObject();
+        return ts;
+    }
+
     public void readFromSymbolToConsol() {
         StringBuilder strB = new StringBuilder();
         if (outputSymbol != null) {
@@ -47,7 +64,7 @@ public class ReadWrite {
                             s = new String("EOL");
                             break;
                         case StreamTokenizer.TT_NUMBER:
-                            s = (int)tokenizer.nval+"";
+                            s = (int) tokenizer.nval + "";
                             break;
                         case StreamTokenizer.TT_WORD:
                             s = tokenizer.sval;

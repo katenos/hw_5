@@ -5,6 +5,7 @@
  */
 package hw_5;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -24,34 +25,32 @@ public class Hw_5 {
     public static int n = 3;
     public static ReadWrite rw = new ReadWrite();
 
-    public static void main(String[] args) throws InterruptedException, BlockedAccount, UnsupportedEncodingException, IOException {
+    public static void main(String[] args) throws InterruptedException, BlockedAccount, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
         prepare();
-        menuWriteSymbol();
-//        start();
-//        t.readUsingFileInputStream();
-//        printInfo();
-//        if (inputePin(card)) {
-//            test();
-//        }
-//        t.writeUsingOutputStream();
+        start();
     }
 
-    public static void start() throws InterruptedException, BlockedAccount, IOException {
-        System.out.println("Введите номер вашей карты (считается, что номер карты будет введен правильный)");
-        //для входа нужно ввести номер карты 12345678 и пинкод 0000
+    public static void start() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
-        int number = sc.nextInt();
-        for (Card tmpCard : t.getCards()) {
-            if (tmpCard.getNumber() == number) {
-                card = tmpCard;
+        card = null;
+        boolean checkNum = false;
+        while (!checkNum) {
+            System.out.println("Введите номер вашей карты (номер карты, который есть в базе)");
+            int number = sc.nextInt();
+            for (Card tmpCard : t.getCards()) {
+                if (tmpCard.getNumber() == number) {
+                    card = tmpCard;
+                    checkNum=true;
+                }
             }
         }
+        //для входа нужно ввести номер карты 12345678 и пинкод 0000
         n = 3;
         inputePin(card);
         menu();
     }
 
-    public static void menu() throws InterruptedException, BlockedAccount, IOException {
+    public static void menu() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Клиент: " + client.getFIO());
         System.out.println("Выберите операцию: ");
@@ -66,7 +65,8 @@ public class Hw_5 {
         System.out.println("9 - вывести список карт");
         System.out.println("10 - вывести список карт клиента");
         System.out.println("11 - потоки ввода/вывода");
-        System.out.println("12 - выбрать другую карту");
+        System.out.println("12 - сериализация");
+        System.out.println("13 - выбрать другую карту");
         System.out.println("");
         switch (sc.nextLine()) {
             case "1":
@@ -143,6 +143,9 @@ public class Hw_5 {
                 menuInputOutput();
                 break;
             case "12":
+                menuSerialize();
+                break;
+            case "13":
                 start();
                 break;
             default:
@@ -150,7 +153,24 @@ public class Hw_5 {
         }
     }
 
-    public static void menuInputOutput() throws InterruptedException, BlockedAccount, UnsupportedEncodingException, IOException {
+    public static void menuSerialize() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Выберите: ");
+        System.out.println("1 - сериализовать объекты");
+        System.out.println("2 - десериализовать объекты");
+        switch (sc.nextLine()) {
+            case "1":
+                rw.serialData(t);
+                menu();
+                break;
+            case "2":
+                t = rw.getSerialData();
+                menu();
+                break;
+        }
+    }
+
+    public static void menuInputOutput() throws InterruptedException, BlockedAccount, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Чтение/запись списка клиентов и их карт");
         System.out.println("Выберите метод: ");
@@ -188,7 +208,7 @@ public class Hw_5 {
         }
     }
 
-    public static void menuWriteSymbol() throws InterruptedException, BlockedAccount, IOException {
+    public static void menuWriteSymbol() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         StringBuilder strB = new StringBuilder();
         System.out.println("Выберите что будем записывать: ");
@@ -213,7 +233,7 @@ public class Hw_5 {
         }
     }
 
-    public static void menuWriteByteStream() throws InterruptedException, BlockedAccount, IOException {
+    public static void menuWriteByteStream() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         StringBuilder strB = new StringBuilder();
         System.out.println("Выберите что будем записывать: ");
