@@ -5,10 +5,13 @@
  */
 package hw_5;
 
+import hw_5.Exception.IncorrectlyPincodeException;
+import hw_5.Exception.BlockedAccountException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -25,12 +28,25 @@ public class Hw_5 {
     public static int n = 3;
     public static ReadWrite rw = new ReadWrite();
 
-    public static void main(String[] args) throws InterruptedException, BlockedAccount, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
+    public static void main(String[] args) throws InterruptedException, BlockedAccountException, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
         prepare();
-        start();
+//        Decreaser dec = new Decreaser();
+//        Increaser inc = new Increaser();
+//        inc.setPriority(Thread.MIN_PRIORITY);
+//        dec.setPriority(Thread.MAX_PRIORITY);
+//        inc.start();
+//        dec.start();
+        Thread seqInc = new Thread(new SeqentialIncreasing());
+        Thread seqDec = new Thread(new SeqentialDecreasing());
+        seqInc.setPriority(Thread.MIN_PRIORITY);
+        seqDec.setPriority(Thread.MAX_PRIORITY);
+        seqInc.start();
+        seqDec.start();
+        System.out.println("Главный поток завершён...");
+//        start();
     }
 
-    public static void start() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
+    public static void start() throws InterruptedException, BlockedAccountException, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         card = null;
         boolean checkNum = false;
@@ -40,7 +56,7 @@ public class Hw_5 {
             for (Card tmpCard : t.getCards()) {
                 if (tmpCard.getNumber() == number) {
                     card = tmpCard;
-                    checkNum=true;
+                    checkNum = true;
                 }
             }
         }
@@ -50,7 +66,7 @@ public class Hw_5 {
         menu();
     }
 
-    public static void menu() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
+    public static void menu() throws InterruptedException, BlockedAccountException, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Клиент: " + client.getFIO());
         System.out.println("Выберите операцию: ");
@@ -77,12 +93,14 @@ public class Hw_5 {
             case "2":
                 System.out.println("Введите сумму");
                 int sum = sc.nextInt();
+
                 t.transactions(card, operationMoney.get(1), sum);
                 menu();
                 break;
             case "3":
                 System.out.println("Введите сумму");
                 sum = sc.nextInt();
+
                 t.transactions(card, operationMoney.get(0), sum);
                 menu();
                 break;
@@ -153,7 +171,7 @@ public class Hw_5 {
         }
     }
 
-    public static void menuSerialize() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
+    public static void menuSerialize() throws InterruptedException, BlockedAccountException, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Выберите: ");
         System.out.println("1 - сериализовать объекты");
@@ -170,7 +188,7 @@ public class Hw_5 {
         }
     }
 
-    public static void menuInputOutput() throws InterruptedException, BlockedAccount, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
+    public static void menuInputOutput() throws InterruptedException, BlockedAccountException, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Чтение/запись списка клиентов и их карт");
         System.out.println("Выберите метод: ");
@@ -208,7 +226,7 @@ public class Hw_5 {
         }
     }
 
-    public static void menuWriteSymbol() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
+    public static void menuWriteSymbol() throws InterruptedException, BlockedAccountException, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         StringBuilder strB = new StringBuilder();
         System.out.println("Выберите что будем записывать: ");
@@ -233,7 +251,7 @@ public class Hw_5 {
         }
     }
 
-    public static void menuWriteByteStream() throws InterruptedException, BlockedAccount, IOException, FileNotFoundException, ClassNotFoundException {
+    public static void menuWriteByteStream() throws InterruptedException, BlockedAccountException, IOException, FileNotFoundException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         StringBuilder strB = new StringBuilder();
         System.out.println("Выберите что будем записывать: ");
@@ -349,23 +367,23 @@ public class Hw_5 {
         t.transactions(card, operationMoney.get(1), 1000);
     }
 
-    public static boolean inputePin(Card card) throws InterruptedException, BlockedAccount {
+    public static boolean inputePin(Card card) throws InterruptedException, BlockedAccountException {
         //пинкод
         n--;
         System.out.println("Введите пинкод");
         Scanner sc = new Scanner(System.in);
         try {
             return card.checkPincode(sc.nextLine(), n);
-        } catch (IncorrectlyPincode e) {
+        } catch (IncorrectlyPincodeException e) {
             try {
                 if (n > 0) {
                     System.out.println(e.getMessage());
                     inputePin(card);
                 } else {
-                    throw new BlockedAccount();
+                    throw new BlockedAccountException();
                 }
 
-            } catch (BlockedAccount ex) {
+            } catch (BlockedAccountException ex) {
                 System.out.println(ex.getMessage());
                 Thread.sleep(3000);
                 n = 3;

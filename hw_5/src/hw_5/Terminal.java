@@ -5,6 +5,9 @@
  */
 package hw_5;
 
+import hw_5.Exception.DuplicateCardException;
+import hw_5.Exception.DuplicateClientException;
+import hw_5.Exception.InsufficientFundsException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -37,13 +40,13 @@ public class Terminal implements TerminalInterface,Serializable  {
             try {
                 card.takeMoney(sum);
                 System.out.println("Успешно!");
-            } catch (InsufficientFunds ex) {
+            } catch (InsufficientFundsException ex) {
                 System.out.println(ex.getMessage());
             }
         } else {
             try {
                 card.putMoney(sum);
-            } catch (InsufficientFunds ex) {
+            } catch (InsufficientFundsException ex) {
                 System.out.println(ex.getMessage());
             }
         }
@@ -55,12 +58,12 @@ public class Terminal implements TerminalInterface,Serializable  {
             try {
                 for (Client client : clients) {
                     if (client.getFIO().equals(fio)) {
-                        throw new DuplicateClient();
+                        throw new DuplicateClientException();
                     }
                 }
                 clients.add(new Client(fio));
                 System.out.println("Клиент создан.");
-            } catch (DuplicateClient ex) {
+            } catch (DuplicateClientException ex) {
                 System.out.println(ex.getMessage());
             }
 
@@ -86,14 +89,14 @@ public class Terminal implements TerminalInterface,Serializable  {
             try {
                 for (Card card : cards) {
                     if (card.getNumber() == number) {
-                        throw new DuplicateCard();
+                        throw new DuplicateCardException();
                     }
                 }
                 Card card = new Card(number, pincode, owner);
                 cards.add(card);
                 owner.addCard(card);
                 System.out.println("Карта создана");
-            } catch (DuplicateCard ex) {
+            } catch (DuplicateCardException ex) {
                 System.out.println(ex.getMessage());
             }
         } else {

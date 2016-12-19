@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hw_5;
+package hw_5.Exception;
 
 /**
  *
  * @author kate_
  */
-public class IncorrectlyPincode extends Exception {
+public class IncorrectlyPincodeException extends Exception {
 
-    public IncorrectlyPincode(int n) {
+    public IncorrectlyPincodeException(int n) {
         super("Пинкод введен неверно. Осталось попыток: "+n);
     }
 }

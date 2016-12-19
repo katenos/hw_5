@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hw_5;
+package hw_5.Exception;
 
 /**
  *
  * @author kate_
  */
-public class InsufficientFunds extends Exception{
-     public InsufficientFunds(){     
-        super("Некорректная сумма.");        
+public class DuplicateCardException extends DuplicateDataException{
+    public DuplicateCardException(){
+        super("Карта с таким номером уже существует!");
     }
 }

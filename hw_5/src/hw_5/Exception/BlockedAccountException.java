@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hw_5;
+package hw_5.Exception;
 
 /**
  *
  * @author kate_
  */
-public class BlockedAccount extends Exception{
-    public BlockedAccount() throws InterruptedException{
+public class BlockedAccountException extends Exception{
+    public BlockedAccountException() throws InterruptedException{
         super("Ваш аккаунт заблокирован на 3 секунды");        
     }
     

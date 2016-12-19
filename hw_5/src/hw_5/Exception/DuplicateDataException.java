@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hw_5;
+package hw_5.Exception;
 
 /**
  *
  * @author kate_
  */
-public class DuplicateClient extends DuplicateData{
-    public DuplicateClient(){
-        super("Клиент с таким ФИО уже существует!");
+public class DuplicateDataException extends Exception{
+    public DuplicateDataException(String message){
+        super("Дублирование данных! "+message);
     }
-    
 }

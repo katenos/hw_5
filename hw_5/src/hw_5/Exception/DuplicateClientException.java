@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hw_5;
+package hw_5.Exception;
 
 /**
  *
  * @author kate_
  */
-public class DuplicateCard extends DuplicateData{
-    public DuplicateCard(){
-        super("Карта с таким номером уже существует!");
+public class DuplicateClientException extends DuplicateDataException{
+    public DuplicateClientException(){
+        super("Клиент с таким ФИО уже существует!");
     }
+    
 }

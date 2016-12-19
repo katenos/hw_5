@@ -5,6 +5,8 @@
  */
 package hw_5;
 
+import hw_5.Exception.IncorrectlyPincodeException;
+import hw_5.Exception.InsufficientFundsException;
 import java.io.Serializable;
 
 /**
@@ -56,27 +58,27 @@ public class Card implements Serializable{
         return this.cash;
     }
 
-    public boolean checkPincode(String inputPin, int n) throws IncorrectlyPincode {
+    public boolean checkPincode(String inputPin, int n) throws IncorrectlyPincodeException {
         if (this.pincode.equals(inputPin)) {
             return true;
         } else {
-            throw new IncorrectlyPincode(n);
+            throw new IncorrectlyPincodeException(n);
         }
     }
 
-    public void takeMoney(int sum) throws InsufficientFunds {
+    public void takeMoney(int sum) throws InsufficientFundsException {
         if (this.cash - sum >= 0 && sum % 100 == 0) {
             this.cash -= sum;
         } else {
-            throw new InsufficientFunds();
+            throw new InsufficientFundsException();
         }
     }
 
-    public void putMoney(int sum) throws InsufficientFunds {
+    public synchronized void putMoney(int sum) throws InsufficientFundsException {
         if (sum % 100 == 0) {
             this.cash += sum;
         } else {
-            throw new InsufficientFunds();
+            throw new InsufficientFundsException();
         }
     }
 }
