@@ -7,6 +7,7 @@ package hw_5;
 
 import hw_5.Exception.IncorrectlyPincodeException;
 import hw_5.Exception.BlockedAccountException;
+import hw_5.Exception.InsufficientFundsException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,7 +22,7 @@ import java.util.Scanner;
 public class Hw_5 {
 
     public static Terminal t;
-    public static Card card;
+    public volatile static Card card;
     public static Client client;
     public static ArrayList<String> operationMoney;
     public static ArrayList<String> operationClientCard;
@@ -29,21 +30,40 @@ public class Hw_5 {
     public static ReadWrite rw = new ReadWrite();
 
     public static void main(String[] args) throws InterruptedException, BlockedAccountException, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
+        System.out.println("Задание 1");
         prepare();
-//        Decreaser dec = new Decreaser();
-//        Increaser inc = new Increaser();
-//        inc.setPriority(Thread.MIN_PRIORITY);
-//        dec.setPriority(Thread.MAX_PRIORITY);
-//        inc.start();
-//        dec.start();
-        Thread seqInc = new Thread(new SeqentialIncreasing());
-        Thread seqDec = new Thread(new SeqentialDecreasing());
+        Decreaser dec = new Decreaser();
+        Increaser inc = new Increaser();
+        inc.setPriority(Thread.MIN_PRIORITY);
+        dec.setPriority(Thread.MAX_PRIORITY);
+        inc.start();
+        dec.start();
+        dec.join();
+        inc.join();
+        System.out.println("Задание 2");
+        Thread seqInc;
+        Thread seqDec;
+        prepare();
+        seqInc = new Thread(new SeqentialIncreasing());
+        seqDec = new Thread(new SeqentialDecreasing());
         seqInc.setPriority(Thread.MIN_PRIORITY);
         seqDec.setPriority(Thread.MAX_PRIORITY);
         seqInc.start();
         seqDec.start();
+        
         System.out.println("Главный поток завершён...");
-//        start();
+    }
+
+    public static synchronized void putOrTake(boolean take) throws InsufficientFundsException, InterruptedException {
+        if (take) {
+            Hw_5.card.takeMoney(200);
+            System.out.println("Сумма на карте(снятие): " + Hw_5.card.getCash());
+        } else {
+            Hw_5.card.putMoney(1000);
+            System.out.println("Сумма на карте(пополнение): " + Hw_5.card.getCash());
+        }
+        Hw_5.class.notify();
+        Hw_5.class.wait(1000);
     }
 
     public static void start() throws InterruptedException, BlockedAccountException, IOException, FileNotFoundException, ClassNotFoundException {

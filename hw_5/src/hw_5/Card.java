@@ -74,7 +74,7 @@ public class Card implements Serializable{
         }
     }
 
-    public synchronized void putMoney(int sum) throws InsufficientFundsException {
+    public void putMoney(int sum) throws InsufficientFundsException {
         if (sum % 100 == 0) {
             this.cash += sum;
         } else {
