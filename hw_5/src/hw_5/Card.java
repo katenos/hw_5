@@ -13,7 +13,7 @@ import java.io.Serializable;
  *
  * @author kate_
  */
-public class Card implements Serializable{
+public class Card implements CardInterface{
 
     private int number;
     private int cash;
@@ -42,22 +42,27 @@ public class Card implements Serializable{
         return strB.toString();
     }
 
+    @Override
     public Client getOwner() {
         return this.owner;
     }
 
+    @Override
     public int getNumber() {
         return this.number;
     }
 
+    @Override
     public String getPincode() {
         return this.pincode;
     }
 
+    @Override
     public int getCash() {
         return this.cash;
     }
 
+    @Override
     public boolean checkPincode(String inputPin, int n) throws IncorrectlyPincodeException {
         if (this.pincode.equals(inputPin)) {
             return true;
@@ -66,17 +71,21 @@ public class Card implements Serializable{
         }
     }
 
+    @Override
     public void takeMoney(int sum) throws InsufficientFundsException {
         if (this.cash - sum >= 0 && sum % 100 == 0) {
             this.cash -= sum;
+            System.out.println("Сумма на карте(снятие): " + this.cash);
         } else {
             throw new InsufficientFundsException();
         }
     }
 
+    @Override
     public void putMoney(int sum) throws InsufficientFundsException {
         if (sum % 100 == 0) {
             this.cash += sum;
+            System.out.println("Сумма на карте(пополнение): " + this.cash);
         } else {
             throw new InsufficientFundsException();
         }

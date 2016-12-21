@@ -18,7 +18,6 @@ public class Decreaser extends Thread {
         try {
             for (int i = 0; i < 10; i++) {
                 Hw_5.card.takeMoney(200);
-                System.out.println("Сумма на карте(снятие): " + Hw_5.card.getCash());
             }
         } catch (InsufficientFundsException ex) {
             System.out.println(ex.getMessage());

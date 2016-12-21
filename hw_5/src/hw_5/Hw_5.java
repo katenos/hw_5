@@ -7,7 +7,6 @@ package hw_5;
 
 import hw_5.Exception.IncorrectlyPincodeException;
 import hw_5.Exception.BlockedAccountException;
-import hw_5.Exception.InsufficientFundsException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,7 +20,7 @@ import java.util.Scanner;
 public class Hw_5 {
 
     public static Terminal t;
-    public volatile static Card card;
+    public static CardInterface card;
     public static Client client;
     public static ArrayList<String> operationMoney;
     public static ArrayList<String> operationClientCard;
@@ -30,7 +29,7 @@ public class Hw_5 {
 
     public static void main(String[] args) throws InterruptedException, BlockedAccountException, UnsupportedEncodingException, IOException, FileNotFoundException, ClassNotFoundException {
         System.out.println("Задание 1");
-        prepare();
+        prepare(false);
         Decreaser dec = new Decreaser();
         Increaser inc = new Increaser();
         inc.setPriority(Thread.MIN_PRIORITY);
@@ -42,14 +41,23 @@ public class Hw_5 {
         System.out.println("Задание 2");
         Thread seqInc;
         Thread seqDec;
-        prepare();
+        prepare(false);
         seqInc = new Thread(new SeqentialIncreasing());
         seqDec = new Thread(new SeqentialDecreasing());
         seqInc.setPriority(Thread.MIN_PRIORITY);
         seqDec.setPriority(Thread.MAX_PRIORITY);
         seqInc.start();
         seqDec.start();
-        
+        seqDec.join();
+        seqInc.join();
+        System.out.println("Задание 3");
+        prepare(true);
+        Decreaser decSync = new Decreaser();
+        Increaser incSync = new Increaser();
+        incSync.setPriority(Thread.MIN_PRIORITY);
+        decSync.setPriority(Thread.MAX_PRIORITY);
+        incSync.start();
+        decSync.start();
         System.out.println("Главный поток завершён...");
     }
 
@@ -60,7 +68,7 @@ public class Hw_5 {
         while (!checkNum) {
             System.out.println("Введите номер вашей карты (номер карты, который есть в базе)");
             int number = sc.nextInt();
-            for (Card tmpCard : t.getCards()) {
+            for (CardInterface tmpCard : t.getCards()) {
                 if (tmpCard.getNumber() == number) {
                     card = tmpCard;
                     checkNum = true;
@@ -129,7 +137,7 @@ public class Hw_5 {
                 System.out.println("Введите пинкод");
                 String pin;
                 pin = sc.nextLine();
-                t.operationsCard(operationClientCard.get(0), number, pin, client);
+                t.operationsCard(operationClientCard.get(0), number, pin, client, false);
                 menu();
                 break;
             case "7":
@@ -137,7 +145,7 @@ public class Hw_5 {
                 number = sc.nextInt();
                 System.out.println("Введите пинкод");
                 pin = sc.nextLine();
-                t.operationsCard(operationClientCard.get(1), number, pin, client);
+                t.operationsCard(operationClientCard.get(1), number, pin, client, false);
                 menu();
                 break;
             case "8":
@@ -150,7 +158,7 @@ public class Hw_5 {
                 break;
             case "9":
                 System.out.println("Список карт: ");
-                ArrayList<Card> arrayCards = t.getCards();
+                ArrayList<CardInterface> arrayCards = t.getCards();
                 for (int i = 0; i < arrayCards.size(); i++) {
                     System.out.println((i + 1) + ": " + arrayCards.get(i).getNumber() + " владелец: " + arrayCards.get(i).getOwner().getFIO());
                 }
@@ -302,7 +310,7 @@ public class Hw_5 {
 
     public static void printInfo() {
         ArrayList<Client> arrayClients = t.getClients();
-        ArrayList<Card> arrayCards = t.getCards();
+        ArrayList<CardInterface> arrayCards = t.getCards();
         for (int i = 0; i < arrayClients.size(); i++) {
             System.out.println(i + ": " + arrayClients.get(i).getFIO());
         }
@@ -311,53 +319,52 @@ public class Hw_5 {
         }
     }
 
-    public static void test() {
-        ArrayList<Client> arrayClients = new ArrayList<>();
-        ArrayList<Card> arrayCards = new ArrayList<>();
-        //проверка счета
-        System.out.println("Сумма на счете: " + t.checkInvoice(card));
-        //снять
-        t.transactions(card, operationMoney.get(0), 600);
-        System.out.println("Сняли 600 рублей " + t.checkInvoice(card));
-        System.out.println("Попытались снять еще 600 денег не хватило");
-        t.transactions(card, operationMoney.get(0), 600);
-        System.out.println("Снимем не кратное 100");
-        t.transactions(card, operationMoney.get(0), 550);
-        //положить
-        t.transactions(card, operationMoney.get(1), 500);
-        System.out.println("Положили 500 " + t.checkInvoice(card));
-        //добавить клиента
-        t.operationsClient(operationClientCard.get(0), "Маркин Михаил Павлович");
-        System.out.println("Добавили клиента. Список клиентов:");
-        arrayClients = t.getClients();
-        for (int i = 0; i < arrayClients.size(); i++) {
-            System.out.println(i + ": " + arrayClients.get(i).getFIO());
-        }
-        System.out.println("Попробуем добавить такого же");
-        t.operationsClient(operationClientCard.get(0), "Маркин Михаил Павлович");
-        System.out.println("Удалим клиента");
-        t.operationsClient(operationClientCard.get(1), "Маркин Михаил Павлович");
-        arrayClients = t.getClients();
-        for (int i = 0; i < arrayClients.size(); i++) {
-            System.out.println(i + ": " + arrayClients.get(i).getFIO());
-        }
-        //добавим карту
-        t.operationsCard(operationClientCard.get(0), 11111111, "1234", client);
-        System.out.println("Добавили карту. Список карт:");
-        arrayCards = t.getCards();
-        for (int i = 0; i < arrayCards.size(); i++) {
-            System.out.println(i + ": " + arrayCards.get(i).getNumber());
-        }
-        System.out.println("Попробуем добавить такую же");
-        t.operationsCard(operationClientCard.get(0), 11111111, "1234", client);
-        System.out.println("Удалим карту");
-        t.operationsCard(operationClientCard.get(1), 11111111, "1234", client);
-        for (int i = 0; i < arrayCards.size(); i++) {
-            System.out.println(i + ": " + arrayCards.get(i).getNumber());
-        }
-    }
-
-    public static void prepare() {
+//    public static void test() {
+//        ArrayList<Client> arrayClients = new ArrayList<>();
+//        ArrayList<CardInterface> arrayCards = new ArrayList<>();
+//        //проверка счета
+//        System.out.println("Сумма на счете: " + t.checkInvoice(card));
+//        //снять
+//        t.transactions(card, operationMoney.get(0), 600);
+//        System.out.println("Сняли 600 рублей " + t.checkInvoice(card));
+//        System.out.println("Попытались снять еще 600 денег не хватило");
+//        t.transactions(card, operationMoney.get(0), 600);
+//        System.out.println("Снимем не кратное 100");
+//        t.transactions(card, operationMoney.get(0), 550);
+//        //положить
+//        t.transactions(card, operationMoney.get(1), 500);
+//        System.out.println("Положили 500 " + t.checkInvoice(card));
+//        //добавить клиента
+//        t.operationsClient(operationClientCard.get(0), "Маркин Михаил Павлович");
+//        System.out.println("Добавили клиента. Список клиентов:");
+//        arrayClients = t.getClients();
+//        for (int i = 0; i < arrayClients.size(); i++) {
+//            System.out.println(i + ": " + arrayClients.get(i).getFIO());
+//        }
+//        System.out.println("Попробуем добавить такого же");
+//        t.operationsClient(operationClientCard.get(0), "Маркин Михаил Павлович");
+//        System.out.println("Удалим клиента");
+//        t.operationsClient(operationClientCard.get(1), "Маркин Михаил Павлович");
+//        arrayClients = t.getClients();
+//        for (int i = 0; i < arrayClients.size(); i++) {
+//            System.out.println(i + ": " + arrayClients.get(i).getFIO());
+//        }
+//        //добавим карту
+//        t.operationsCard(operationClientCard.get(0), 11111111, "1234", client);
+//        System.out.println("Добавили карту. Список карт:");
+//        arrayCards = t.getCards();
+//        for (int i = 0; i < arrayCards.size(); i++) {
+//            System.out.println(i + ": " + arrayCards.get(i).getNumber());
+//        }
+//        System.out.println("Попробуем добавить такую же");
+//        t.operationsCard(operationClientCard.get(0), 11111111, "1234", client);
+//        System.out.println("Удалим карту");
+//        t.operationsCard(operationClientCard.get(1), 11111111, "1234", client);
+//        for (int i = 0; i < arrayCards.size(); i++) {
+//            System.out.println(i + ": " + arrayCards.get(i).getNumber());
+//        }
+//    }
+    public static void prepare(boolean sync) {
         operationMoney = new ArrayList<String>();
         operationMoney.add("Снять");
         operationMoney.add("Положить");
@@ -369,12 +376,12 @@ public class Hw_5 {
         t.operationsClient(operationClientCard.get(0), "Nosov Pavel Petrovich");
         int newNumberCard = 12345678;
         client = t.getClients().get(0);
-        t.operationsCard(operationClientCard.get(0), newNumberCard, "0000", client);
+        t.operationsCard(operationClientCard.get(0), newNumberCard, "0000", client, sync);
         card = client.getCards().get(0);
         t.transactions(card, operationMoney.get(1), 1000);
     }
 
-    public static boolean inputePin(Card card) throws InterruptedException, BlockedAccountException {
+    public static boolean inputePin(CardInterface card) throws InterruptedException, BlockedAccountException {
         //пинкод
         n--;
         System.out.println("Введите пинкод");

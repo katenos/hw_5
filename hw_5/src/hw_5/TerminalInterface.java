@@ -11,11 +11,11 @@ package hw_5;
  */
 public interface TerminalInterface {
 
-    int checkInvoice(Card card);
+    int checkInvoice(CardInterface card);
 
-    void transactions(Card card, String typeOperation,int sum) ;
+    void transactions(CardInterface card, String typeOperation,int sum) ;
 
     void operationsClient(String operationClient, String fio);
 
-    void operationsCard(String operationCard, int number, String pincode, Client owner);
+    void operationsCard(String operationCard, int number, String pincode, Client owner, boolean sync);
 }

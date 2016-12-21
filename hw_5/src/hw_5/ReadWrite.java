@@ -139,7 +139,7 @@ public class ReadWrite {
                 int number = Integer.parseInt(readForFieldCard(bufRead).toString());
                 int cash = Integer.parseInt(readForFieldCard(bufRead).toString());
                 String pincode = readForFieldCard(bufRead).toString();
-                t.operationsCard("Создать", number, pincode, t.getClients().get(t.getClients().size() - 1));
+                t.operationsCard("Создать", number, pincode, t.getClients().get(t.getClients().size() - 1), false);
                 t.transactions(t.getCards().get(t.getCards().size() - 1), "Пополнить", cash);
             }
         }

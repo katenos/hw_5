@@ -18,7 +18,6 @@ public class Increaser extends Thread {
         try {
             for (int i = 0; i < 10; i++) {
                 Hw_5.card.putMoney(1000);
-                System.out.println("Сумма на карте(пополнение): " + Hw_5.card.getCash());
             }
         } catch (InsufficientFundsException ex) {
             System.out.println(ex.getMessage());

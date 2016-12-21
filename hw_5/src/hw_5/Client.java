@@ -15,13 +15,13 @@ import java.util.ArrayList;
 public class Client implements Serializable{
 
     private String FIO;
-    private ArrayList<Card> cards = new ArrayList();
+    private ArrayList<CardInterface> cards = new ArrayList();
 
     public Client(String FIO) {
         this.FIO = FIO;
     }
 
-    public void addCard(Card card) {
+    public void addCard(CardInterface card) {
         cards.add(card);
     }
 
@@ -35,13 +35,13 @@ public class Client implements Serializable{
         strB.append("_");
         strB.append(this.FIO);
         strB.append("|");
-        for (Card card : cards) {
+        for (CardInterface card : cards) {
             strB.append(card.toString());
         }
         return strB.toString();
     }
 
-    public ArrayList<Card> getCards() {
+    public ArrayList<CardInterface> getCards() {
         return cards;
     }
 
@@ -50,7 +50,7 @@ public class Client implements Serializable{
     }
 
     public void removeCard(int number) {
-        for (Card card : cards) {
+        for (CardInterface card : cards) {
             if (card.getNumber() == number) {
                 cards.remove(card);
                 break;

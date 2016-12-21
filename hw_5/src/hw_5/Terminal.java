@@ -10,8 +10,6 @@ import hw_5.Exception.DuplicateClientException;
 import hw_5.Exception.InsufficientFundsException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -20,35 +18,33 @@ import java.util.logging.Logger;
 public class Terminal implements TerminalInterface, Serializable {
 
     private ArrayList<Client> clients = new ArrayList();
-    private ArrayList<Card> cards = new ArrayList();
+    private ArrayList<CardInterface> cards = new ArrayList();
 
     public ArrayList<Client> getClients() {
         return clients;
     }
 
-    public ArrayList<Card> getCards() {
+    public ArrayList<CardInterface> getCards() {
         return cards;
     }
 
     @Override
-    public int checkInvoice(Card card) {
+    public int checkInvoice(CardInterface card) {
         return card.getCash();
     }
 
-     public synchronized void transactionsSync(Card card,boolean take) throws InsufficientFundsException, InterruptedException {
+    public synchronized void transactionsSync(CardInterface card, boolean take) throws InsufficientFundsException, InterruptedException {
         if (take) {
             card.takeMoney(200);
-            System.out.println("Сумма на карте(снятие): " + card.getCash());
         } else {
             card.putMoney(1000);
-            System.out.println("Сумма на карте(пополнение): " + card.getCash());
         }
         this.notify();
         this.wait(1000);
-    }    
+    }
 
     @Override
-    public void transactions(Card card, String typeOperation, int sum) {
+    public void transactions(CardInterface card, String typeOperation, int sum) {
         if (typeOperation.equals("Снять")) {
             try {
                 card.takeMoney(sum);
@@ -83,7 +79,7 @@ public class Terminal implements TerminalInterface, Serializable {
         } else {
             for (Client client : clients) {
                 if (client.getFIO().equals(fio)) {
-                    for (Card card : cards) {
+                    for (CardInterface card : cards) {
                         if (card.getOwner().equals(client.getFIO())) {
                             cards.remove(card);
                         }
@@ -97,15 +93,20 @@ public class Terminal implements TerminalInterface, Serializable {
     }
 
     @Override
-    public void operationsCard(String operationCard, int number, String pincode, Client owner) {
+    public void operationsCard(String operationCard, int number, String pincode, Client owner, boolean sync) {
         if (operationCard.equals("Создать")) {
             try {
-                for (Card card : cards) {
+                for (CardInterface card : cards) {
                     if (card.getNumber() == number) {
                         throw new DuplicateCardException();
                     }
                 }
-                Card card = new Card(number, pincode, owner);
+                CardInterface card;
+                if (sync) {
+                    card = new SynchronizedAccount(new Card(number, pincode, owner));
+                } else {
+                    card = new Card(number, pincode, owner);
+                }
                 cards.add(card);
                 owner.addCard(card);
                 System.out.println("Карта создана");
@@ -113,7 +114,7 @@ public class Terminal implements TerminalInterface, Serializable {
                 System.out.println(ex.getMessage());
             }
         } else {
-            for (Card card : cards) {
+            for (CardInterface card : cards) {
                 if (card.getNumber() == number) {
                     cards.remove(card);
                     card.getOwner().removeCard(number);
