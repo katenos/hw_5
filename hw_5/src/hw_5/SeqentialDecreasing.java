@@ -17,15 +17,15 @@ public class SeqentialDecreasing implements Runnable {
 
     @Override
     public void run() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Hw_5.putOrTake(true);
+        for (int i = 0; i < 10; i++) {
+            try {
+                Hw_5.t.transactionsSync(Hw_5.card, false);
+            } catch (InsufficientFundsException ex) {
+                Logger.getLogger(SeqentialDecreasing.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SeqentialDecreasing.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (InsufficientFundsException ex) {
-            System.out.println(ex.getMessage());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SeqentialDecreasing.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
-
 }

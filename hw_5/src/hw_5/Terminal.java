@@ -10,13 +10,14 @@ import hw_5.Exception.DuplicateClientException;
 import hw_5.Exception.InsufficientFundsException;
 import java.io.Serializable;
 import java.util.ArrayList;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author kate_
  */
-public class Terminal implements TerminalInterface,Serializable  {
+public class Terminal implements TerminalInterface, Serializable {
 
     private ArrayList<Client> clients = new ArrayList();
     private ArrayList<Card> cards = new ArrayList();
@@ -28,11 +29,23 @@ public class Terminal implements TerminalInterface,Serializable  {
     public ArrayList<Card> getCards() {
         return cards;
     }
-    
+
     @Override
     public int checkInvoice(Card card) {
         return card.getCash();
     }
+
+     public synchronized void transactionsSync(Card card,boolean take) throws InsufficientFundsException, InterruptedException {
+        if (take) {
+            card.takeMoney(200);
+            System.out.println("Сумма на карте(снятие): " + card.getCash());
+        } else {
+            card.putMoney(1000);
+            System.out.println("Сумма на карте(пополнение): " + card.getCash());
+        }
+        this.notify();
+        this.wait(1000);
+    }    
 
     @Override
     public void transactions(Card card, String typeOperation, int sum) {
@@ -71,7 +84,7 @@ public class Terminal implements TerminalInterface,Serializable  {
             for (Client client : clients) {
                 if (client.getFIO().equals(fio)) {
                     for (Card card : cards) {
-                        if(card.getOwner().equals(client.getFIO())){
+                        if (card.getOwner().equals(client.getFIO())) {
                             cards.remove(card);
                         }
                     }

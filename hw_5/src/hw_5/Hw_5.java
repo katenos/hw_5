@@ -12,7 +12,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -52,18 +51,6 @@ public class Hw_5 {
         seqDec.start();
         
         System.out.println("Главный поток завершён...");
-    }
-
-    public static synchronized void putOrTake(boolean take) throws InsufficientFundsException, InterruptedException {
-        if (take) {
-            Hw_5.card.takeMoney(200);
-            System.out.println("Сумма на карте(снятие): " + Hw_5.card.getCash());
-        } else {
-            Hw_5.card.putMoney(1000);
-            System.out.println("Сумма на карте(пополнение): " + Hw_5.card.getCash());
-        }
-        Hw_5.class.notify();
-        Hw_5.class.wait(1000);
     }
 
     public static void start() throws InterruptedException, BlockedAccountException, IOException, FileNotFoundException, ClassNotFoundException {

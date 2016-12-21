@@ -17,15 +17,16 @@ public class SeqentialIncreasing implements Runnable {
 
     @Override
     public void run() {
-        try {
-            for (int i = 0; i < 10; i++) {
-                Hw_5.putOrTake(false);
+        for (int i = 0; i < 10; i++) {
+            try {
+                Hw_5.t.transactionsSync(Hw_5.card, true);
+            } catch (InsufficientFundsException ex) {
+                Logger.getLogger(SeqentialIncreasing.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(SeqentialIncreasing.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-        } catch (InsufficientFundsException ex) {
-            System.out.println(ex.getMessage());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SeqentialIncreasing.class.getName()).log(Level.SEVERE, null, ex);
+            
         }
     }
 }
