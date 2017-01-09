@@ -319,51 +319,6 @@ public class Hw_5 {
         }
     }
 
-//    public static void test() {
-//        ArrayList<Client> arrayClients = new ArrayList<>();
-//        ArrayList<CardInterface> arrayCards = new ArrayList<>();
-//        //проверка счета
-//        System.out.println("Сумма на счете: " + t.checkInvoice(card));
-//        //снять
-//        t.transactions(card, operationMoney.get(0), 600);
-//        System.out.println("Сняли 600 рублей " + t.checkInvoice(card));
-//        System.out.println("Попытались снять еще 600 денег не хватило");
-//        t.transactions(card, operationMoney.get(0), 600);
-//        System.out.println("Снимем не кратное 100");
-//        t.transactions(card, operationMoney.get(0), 550);
-//        //положить
-//        t.transactions(card, operationMoney.get(1), 500);
-//        System.out.println("Положили 500 " + t.checkInvoice(card));
-//        //добавить клиента
-//        t.operationsClient(operationClientCard.get(0), "Маркин Михаил Павлович");
-//        System.out.println("Добавили клиента. Список клиентов:");
-//        arrayClients = t.getClients();
-//        for (int i = 0; i < arrayClients.size(); i++) {
-//            System.out.println(i + ": " + arrayClients.get(i).getFIO());
-//        }
-//        System.out.println("Попробуем добавить такого же");
-//        t.operationsClient(operationClientCard.get(0), "Маркин Михаил Павлович");
-//        System.out.println("Удалим клиента");
-//        t.operationsClient(operationClientCard.get(1), "Маркин Михаил Павлович");
-//        arrayClients = t.getClients();
-//        for (int i = 0; i < arrayClients.size(); i++) {
-//            System.out.println(i + ": " + arrayClients.get(i).getFIO());
-//        }
-//        //добавим карту
-//        t.operationsCard(operationClientCard.get(0), 11111111, "1234", client);
-//        System.out.println("Добавили карту. Список карт:");
-//        arrayCards = t.getCards();
-//        for (int i = 0; i < arrayCards.size(); i++) {
-//            System.out.println(i + ": " + arrayCards.get(i).getNumber());
-//        }
-//        System.out.println("Попробуем добавить такую же");
-//        t.operationsCard(operationClientCard.get(0), 11111111, "1234", client);
-//        System.out.println("Удалим карту");
-//        t.operationsCard(operationClientCard.get(1), 11111111, "1234", client);
-//        for (int i = 0; i < arrayCards.size(); i++) {
-//            System.out.println(i + ": " + arrayCards.get(i).getNumber());
-//        }
-//    }
     public static void prepare(boolean sync) {
         operationMoney = new ArrayList<String>();
         operationMoney.add("Снять");

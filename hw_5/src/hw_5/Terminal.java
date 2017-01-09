@@ -33,12 +33,8 @@ public class Terminal implements TerminalInterface, Serializable {
         return card.getCash();
     }
 
-    public synchronized void transactionsSync(CardInterface card, boolean take) throws InsufficientFundsException, InterruptedException {
-        if (take) {
-            card.takeMoney(200);
-        } else {
-            card.putMoney(1000);
-        }
+    public synchronized void transactionsSync(CardInterface card,  String typeOperation, int sum) throws InsufficientFundsException, InterruptedException {
+        transactions(card, typeOperation, sum);
         this.notify();
         this.wait(1000);
     }
@@ -47,8 +43,7 @@ public class Terminal implements TerminalInterface, Serializable {
     public void transactions(CardInterface card, String typeOperation, int sum) {
         if (typeOperation.equals("Снять")) {
             try {
-                card.takeMoney(sum);
-                System.out.println("Успешно!");
+                card.takeMoney(sum);               
             } catch (InsufficientFundsException ex) {
                 System.out.println(ex.getMessage());
             }

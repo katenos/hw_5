@@ -19,7 +19,7 @@ public class SeqentialDecreasing implements Runnable {
     public void run() {
         for (int i = 0; i < 10; i++) {
             try {
-                Hw_5.t.transactionsSync(Hw_5.card, false);
+                Hw_5.t.transactionsSync(Hw_5.card, "Снять", 200);
             } catch (InsufficientFundsException ex) {
                 Logger.getLogger(SeqentialDecreasing.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
